@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  backend:
+    image: docker.io/dinesh10275/dev-backend:v0.62
+    deploy:
+      replicas: 1
+      labels:
+        - "com.docker.stack.namespace=thetym"
+      restart_policy:
+        condition: any
+        max_attempts: 2
+        window: 120s
+      placement:
+        constraints:
+          - node.role == manager
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_DATA_MONGODB_URI: "mongodb+srv://admin:bbs2020@cluster0.ohkfp.mongodb.net/devdb?retryWrites=true&w=majority"
+      baseUrl: "https://devaccount.thetym.com/thetym-service/"
+      frontEndUrl: "https://dev.thetym.com/"
+      aws.accessKeyId: "--------------"
+      aws.secretAccessKey: "------------------"
+      spring.servlet.multipart.max-file-size: "50MB"
+      spring.servlet.multipart.max-request-size: "50MB"
+    networks:
+      - thetym_network
+
+networks:
+  thetym_network:
+    driver: overlay
+
